@@ -28,9 +28,8 @@ void pwm_out(int, int);
 #define STANCE_U 2
 #define FLIGHT_U 3
 
-//trigger and state variables; state is previous state; state is current state
+//trigger and state variables; state is current state; initialize state with FLIGHT_U
 int trigger, state = FLIGHT_U;
-
 
 //US sensor
 #define usoPin 38
@@ -75,7 +74,7 @@ const int mot[4][5] = {{5, 23, 22, 21, 24},                            //mot[0]:
 //#define B 1
 
 //Limit switch pins
-//const int lim_swt[4] = {2, 3, 40, 41};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on ecah pin for each motor
+const int lim_swt[4] = {2, 3, 40, 41};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
 
 //Angle reference constants for arrays
 #define th2 0
@@ -141,12 +140,12 @@ PID PID_LKFE(&PID_param[LKFE][ip], &PID_param[LKFE][op], &PID_param[LKFE][sp], P
 
 const int ft_but_pin[2][2] = {{34, 35}, {36, 37}};
 int ft_but[2][2] = {{LOW, LOW},   //Right 1 and right 2
-  {LOW, LOW}
-};                      //Left 1 and left 2
+  {LOW, LOW}                      //Left 1 and left 2
+};
 // Define p_button trigger
 
 //Touchdown LED pins
-const int led_pin[2] = {11, 12};  //Right and left
+const int led_pin[4] = {10, 11, 12, 13};  //one for each state
 
 
 //*********       setup()       *********//
@@ -380,11 +379,6 @@ void loop() {
       trigger = MAX;
     }
 
-    /*
-        if (state != state) {
-          state = state;
-        }*/
-
   }
 
   //Check for MIN trigger and update trigger and state
@@ -395,19 +389,7 @@ void loop() {
       trigger = MIN;
     }
 
-    /*
-        if (state != state) {
-          state = state;
-        }*/
   }
-
-
-
-  /*
-    else {
-      trigger = -1;
-    }
-  */
 
   // Prints the height on the Serial Monitor
   Serial.print("  ");
@@ -435,10 +417,6 @@ void loop() {
       state = STANCE_D;
       trigger = T_DOWN;
     }
-    /*
-        if (state != state) {
-          state = state;
-        }*/
 
   }
 
@@ -456,11 +434,6 @@ void loop() {
       trigger = T_DOWN;
     }
 
-    /*
-        if (state != state) {
-          state = state;
-        }*/
-
   }
 
   //When right foot leaves contact (lift-off)
@@ -473,12 +446,6 @@ void loop() {
         state = FLIGHT_U;
         trigger = L_OFF;
       }
-
-      /*
-            if (state != state) {
-              state = state;
-            }*/
-
     }
   }
 
@@ -492,14 +459,7 @@ void loop() {
         state = FLIGHT_U;
         trigger = L_OFF;
       }
-
-      /*
-        if (state != state) {
-        state = state;
-        }*/
-
     }
-
   }
 
 
