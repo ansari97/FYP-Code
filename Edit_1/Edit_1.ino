@@ -1,7 +1,7 @@
 #include <PID_v1.h>
 #include <SharpIR.h>
 
-//*********Function Declarations*********//
+//***************************Function Declarations***************************//
 
 long pulse(double);
 double angle(long);
@@ -13,7 +13,7 @@ void enc_pls3(void);
 
 void pwm_out(int, int);
 
-//*********Variables and Pin Numbers*********//
+//***************************Variables and Pin Numbers***************************//
 //Sequence based on items
 
 //Trigger triggers
@@ -148,7 +148,7 @@ int ft_but[2][2] = {{LOW, LOW},   //Right 1 and right 2
 const int led_pin[4] = {10, 11, 12, 13};  //one for each state
 
 
-//*********       setup()       *********//
+//***************************       setup()       ***************************//
 
 void setup() {
 
@@ -215,7 +215,7 @@ void setup() {
 }//////////////////////////////////////////////////////////////////////////////
 
 
-//*********       loop()       *********//
+//***************************       loop()       ***************************//
 
 void loop() {
 
@@ -371,25 +371,7 @@ void loop() {
   //Update previous height
   p1_h = height;
 
-  //Check for MAX trigger and update trigger and state
-  if (v1 < 0 && v2 > 0 && v1 < -5)  {
 
-    if (state == FLIGHT_U) {
-      state = FLIGHT_D;
-      trigger = MAX;
-    }
-
-  }
-
-  //Check for MIN trigger and update trigger and state
-  if (v1 > 0 && v2 < 0 && v1 > 5 && (ft_but[L][0] == LOW || ft_but[L][1] == LOW || ft_but[R][0] == LOW || ft_but[R][1] == LOW)) {
-
-    if (state == STANCE_D) {
-      state = STANCE_U;
-      trigger = MIN;
-    }
-
-  }
 
   // Prints the height on the Serial Monitor
   Serial.print("  ");
@@ -407,60 +389,7 @@ void loop() {
   Serial.print(min_h);
 
   //Make a function:check_foot_trigger() !!
-  //When right foot makes contact (touchdown)
-  if (ft_but[R][0] == LOW || ft_but[R][1] == LOW) {
-    digitalWrite(led_pin[R], HIGH);
-    p_max_h = max_h;
-    max_h = 0;
 
-    if (state == FLIGHT_D) {
-      state = STANCE_D;
-      trigger = T_DOWN;
-    }
-
-  }
-
-
-  //When left foot makes contact (touchdown)
-  if (ft_but[L][0] == LOW || ft_but[L][1] == LOW) {
-    digitalWrite(led_pin[L], HIGH);
-    p_max_h = max_h;
-    max_h = 0;
-
-
-
-    if (state == FLIGHT_D ) {
-      state = STANCE_D;
-      trigger = T_DOWN;
-    }
-
-  }
-
-  //When right foot leaves contact (lift-off)
-  if (ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
-    digitalWrite(led_pin[R], LOW);
-
-    if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH) {
-
-      if (state == STANCE_U) {
-        state = FLIGHT_U;
-        trigger = L_OFF;
-      }
-    }
-  }
-
-  //When left foot leaves contact (lift-off)
-  if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH) {
-    digitalWrite(led_pin[L], LOW);
-
-    if (ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
-
-      if (state == STANCE_U) {
-        state = FLIGHT_U;
-        trigger = L_OFF;
-      }
-    }
-  }
 
 
   Serial.print("  ");
@@ -508,8 +437,9 @@ void loop() {
 
 }//////////////////////////////////////////////////////////////////////////////
 
-//*********Functions*********//
+//************************************Functions************************************//
 
+//////////////////////////////////////////////////////////////////////////////
 //Motor PID function; Setpoint in deg; mot_pls in pulses
 //Remove mot_pls since PID_param[ip] already assigned mot_pls?? !!
 //Add max/min PID PWM output !!
@@ -535,6 +465,7 @@ void mot_PID(int motnum, double th_sp, long mot_pls) {
   pwm_out(motnum, PID_param[motnum][op]);
 }
 
+//////////////////////////////////////////////////////////////////////////////
 //Motor driver function based on PID PWM output
 void pwm_out(int motnum, int out) {
   if (out >= 0) {                               //clockwise
@@ -548,8 +479,86 @@ void pwm_out(int motnum, int out) {
     digitalWrite(mot[motnum][aclc], HIGH);
     analogWrite(mot[motnum][enb], out);
   }
-}
+}//********pwm_out END********//
 
+//////////////////////////////////////////////////////////////////////////////
+//State check function
+//returns c_state
+
+int c_state(void) {
+
+  //Check for MAX trigger and update trigger and state
+  if (v1 < 0 && v2 > 0 && v1 < -5)  {
+
+    if (state == FLIGHT_U) {
+      state = FLIGHT_D;
+      trigger = MAX;
+    }
+  }
+
+  //Check for MIN trigger and update trigger and state
+  if (v1 > 0 && v2 < 0 && v1 > 5 && (ft_but[L][0] == LOW || ft_but[L][1] == LOW || ft_but[R][0] == LOW || ft_but[R][1] == LOW)) {
+
+    if (state == STANCE_D) {
+      state = STANCE_U;
+      trigger = MIN;
+    }
+  }
+
+  //When right foot makes contact (touchdown)
+  if (ft_but[R][0] == LOW || ft_but[R][1] == LOW) {
+    digitalWrite(led_pin[R], HIGH);
+    p_max_h = max_h;
+    max_h = 0;
+
+    if (state == FLIGHT_D) {
+      state = STANCE_D;
+      trigger = T_DOWN;
+    }
+  }
+
+
+  //When left foot makes contact (touchdown)
+  if (ft_but[L][0] == LOW || ft_but[L][1] == LOW) {
+    digitalWrite(led_pin[L], HIGH);
+    p_max_h = max_h;
+    max_h = 0;
+
+    if (state == FLIGHT_D ) {
+      state = STANCE_D;
+      trigger = T_DOWN;
+    }
+  }
+
+  //When right foot leaves contact (lift-off)
+  if (ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
+    digitalWrite(led_pin[R], LOW);
+
+    if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH) {
+
+      if (state == STANCE_U) {
+        state = FLIGHT_U;
+        trigger = L_OFF;
+      }
+    }
+  }
+
+  //When left foot leaves contact (lift-off)
+  if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH) {
+    digitalWrite(led_pin[L], LOW);
+
+    if (ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
+
+      if (state == STANCE_U) {
+        state = FLIGHT_U;
+        trigger = L_OFF;
+      }
+    }
+  }
+
+}//********c_state END********//
+
+//////////////////////////////////////////////////////////////////////////////
 //ISRs to count encoder pulses
 void enc_pls0() {
   if (digitalRead(mot[RHFE][encB]) == LOW) { //Clc positive
@@ -586,7 +595,9 @@ void enc_pls3() {
     mot_pls[LKFE]--;
   }
 }
+//********ISRs END********//
 
+//////////////////////////////////////////////////////////////////////////////
 ///Motor stop
 void mot_stop_RHFE() {
   analogWrite(mot[RHFE][enb], 0);
@@ -599,6 +610,19 @@ void mot_stop_LHFE() {
   digitalWrite(mot[LHFE][clc], LOW);
   digitalWrite(mot[LHFE][aclc], LOW);
 }
+
+void mot_stop_RKFE() {
+  analogWrite(mot[RKFE][enb], 0);
+  digitalWrite(mot[RKFE][clc], LOW);
+  digitalWrite(mot[RKFE][aclc], LOW);
+}
+
+void mot_stop_LKFE() {
+  analogWrite(mot[LKFE][enb], 0);
+  digitalWrite(mot[LKFE][clc], LOW);
+  digitalWrite(mot[LKFE][aclc], LOW);
+}
+//********mot_stop END********//
 
 //encoder pulses to angle
 double angle(long pulse) {
