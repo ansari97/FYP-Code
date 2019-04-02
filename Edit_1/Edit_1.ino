@@ -21,6 +21,7 @@ void pwm_out(int, int);
 #define T_DOWN 1
 #define MIN 2
 #define L_OFF 3
+#define INTERMEDIATE -1
 
 //states
 #define FLIGHT_D 0
@@ -73,8 +74,9 @@ const int mot[4][5] = {{5, 23, 22, 21, 24},                            //mot[0]:
 //#define F 0
 //#define B 1
 
-//Limit switch pins
-const int lim_swt[4] = {2, 3, 40, 41};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
+//Limit switch pins (RHFE, LHFE, RKFE, LKFE)
+const int lim_swt_pin[4] = {2, 3, 40, 41};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
+int lim_swt[4];   //limit switch states
 
 //Angle reference constants for arrays
 #define th2 0
@@ -139,18 +141,20 @@ PID PID_LKFE(&PID_param[LKFE][ip], &PID_param[LKFE][op], &PID_param[LKFE][sp], P
 //push buttons; Check debouncing
 
 const int ft_but_pin[2][2] = {{34, 35}, {36, 37}};
-int ft_but[2][2] = {{LOW, LOW},   //Right 1 and right 2
-  {LOW, LOW}                      //Left 1 and left 2
-};
+int ft_but[2][2];// = {{HIGH, HIGH},   //Right 1 and right 2
+//{HIGH, HIGH}                      //Left 1 and left 2
+//};
 // Define p_button trigger
 
 //Touchdown LED pins
-const int led_pin[4] = {10, 11, 12, 13};  //one for each state
+const int LED_pin[4] = {10, 11, 12, 13};  //one for each state
 
 
 //***************************       setup()       ***************************//
 
 void setup() {
+
+  //INTERRUPTS
 
   //Attaches interrupt to all motor encoders' chanA at fallin trigger; ISRs(enc_pls...) checks chanB trigger to determine direction and position
   attachInterrupt(digitalPinToInterrupt(mot[RHFE][encA]), enc_pls0, FALLING);
@@ -158,10 +162,14 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(mot[RKFE][encA]), enc_pls2, FALLING);
   attachInterrupt(digitalPinToInterrupt(mot[LKFE][encA]), enc_pls3, FALLING);
 
-  /*
-    attachInterrupt(digitalPinToInterrupt(lim_swt[RHFE]), mot_stop_RHFE, LOW);
-    attachInterrupt(digitalPinToInterrupt(lim_swt[LHFE]), mot_stop_LHFE, LOW);
-  */
+  //Attaches interrupt to pin 2 and 3 (RHFE and LHFE)
+  //LOW is pin state when limit switches are pressed
+  attachInterrupt(digitalPinToInterrupt(lim_swt[RHFE]), mot_stop_RHFE, LOW);
+  attachInterrupt(digitalPinToInterrupt(lim_swt[LHFE]), mot_stop_LHFE, LOW);
+
+
+
+  //PINMODES
 
   //Sets motor pinmodes
   for (int i = 0; i < 4; i++) {
@@ -178,14 +186,19 @@ void setup() {
 
   //Sets Ft push buttons and touchdown led pin modes
   for (int i = 0; i < 2; i++) {
-    pinMode(led_pin[i], OUTPUT);
+    pinMode(LED_pin[i], OUTPUT);
     pinMode(ft_but_pin[i][0], INPUT);
     pinMode(ft_but_pin[i][1], INPUT);
   }
 
-  //Turn off touchdown LEDs
-  for (int i = 0; i < 2; i++) {
-    digitalWrite(led_pin[i], LOW);
+  //Sets pinmodes of limitswitches
+  for (int i = 0; i < 4; i++) {
+    pinMode(lim_swt_pin[i], INPUT);
+  }
+
+  //Turn off state LEDs
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(LED_pin[i], LOW);
   }
 
   //sets 31KHz PWM to prevent motor noise
@@ -212,14 +225,14 @@ void setup() {
   //Begins serial communication
   Serial.begin(9600);
 
-}//////////////////////////////////////////////////////////////////////////////
+}////////////////////////////////setup() END///////////////////////////////////
 
 
 //***************************       loop()       ***************************//
 
 void loop() {
 
-  trigger = -1;
+  trigger = INTERMEDIATE;
 
   // defines relationship b/w mot_pls and link angles
   // hip angle measured from torso fore side to link in clc direction for both legs;
@@ -236,6 +249,18 @@ void loop() {
     ft_but[i][1] = digitalRead(ft_but_pin[i][1]);
   }
 
+  //reads limit switch states for RKFE and LKFE only (not RHFE and LHFE)
+  for (int i = 2; i < 4; i++) {
+    lim_swt[i] = digitalRead(lim_swt_pin[i]);
+  }
+
+  //Checks limit switches state for RKFE and LKFE and stops them when limit switch pins read LOW (pressed); RHFE and LHFE are attached to interrupts
+  if (lim_swt[RKFE] == LOW) {
+    mot_stop_RKFE();
+  }
+  if (lim_swt[LKFE] == LOW) {
+    mot_stop_LKFE();
+  }
 
   //PID input is the encoder output in pulses
   // Sets at the beginning of loop() function
@@ -390,26 +415,29 @@ void loop() {
 
   //Make a function:check_foot_trigger() !!
 
+  //Check state
+  c_state();
 
-
+//Light up LEDs based on state
+LED();
   Serial.print("  ");
 
   Serial.print("Trigger: ");
 
   switch (trigger) {
-    case 0:
+    case MAX:
       Serial.print("MAX");
       break;
-    case 1:
+    case T_DOWN:
       Serial.print("T_DOWN");
       break;
-    case 2:
+    case MIN:
       Serial.print("MIN");
       break;
-    case 3:
+    case L_OFF:
       Serial.print("L_OFF");
       break;
-    case -1:
+    case INTERMEDIATE:
       Serial.print("INTERMEDIATE");
       break;
   }
@@ -419,16 +447,16 @@ void loop() {
   Serial.print("state: ");
 
   switch (state) {
-    case 0:
+    case FLIGHT_D:
       Serial.print("FLIGHT_D");
       break;
-    case 1:
+    case STANCE_D:
       Serial.print("STANCE_D");
       break;
-    case 2:
+    case STANCE_U:
       Serial.print("STANCE_U");
       break;
-    case 3:
+    case FLIGHT_U:
       Serial.print("FLIGHT_U");
       break;
   }
@@ -484,8 +512,7 @@ void pwm_out(int motnum, int out) {
 //////////////////////////////////////////////////////////////////////////////
 //State check function
 //returns c_state
-
-int c_state(void) {
+void c_state(void) {
 
   //Check for MAX trigger and update trigger and state
   if (v1 < 0 && v2 > 0 && v1 < -5)  {
@@ -505,22 +532,8 @@ int c_state(void) {
     }
   }
 
-  //When right foot makes contact (touchdown)
-  if (ft_but[R][0] == LOW || ft_but[R][1] == LOW) {
-    digitalWrite(led_pin[R], HIGH);
-    p_max_h = max_h;
-    max_h = 0;
-
-    if (state == FLIGHT_D) {
-      state = STANCE_D;
-      trigger = T_DOWN;
-    }
-  }
-
-
-  //When left foot makes contact (touchdown)
-  if (ft_but[L][0] == LOW || ft_but[L][1] == LOW) {
-    digitalWrite(led_pin[L], HIGH);
+  //When feet make contact (touchdown)
+  if (ft_but[R][0] == LOW || ft_but[R][1] == LOW || ft_but[L][0] == LOW || ft_but[L][1] == LOW) {
     p_max_h = max_h;
     max_h = 0;
 
@@ -530,33 +543,36 @@ int c_state(void) {
     }
   }
 
-  //When right foot leaves contact (lift-off)
-  if (ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
-    digitalWrite(led_pin[R], LOW);
+  //When feet leave contact (lift-off)
+  if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH && ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
 
-    if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH) {
-
-      if (state == STANCE_U) {
-        state = FLIGHT_U;
-        trigger = L_OFF;
-      }
+    if (state == STANCE_U) {
+      state = FLIGHT_U;
+      trigger = L_OFF;
     }
-  }
 
-  //When left foot leaves contact (lift-off)
-  if (ft_but[L][0] == HIGH && ft_but[L][1] == HIGH) {
-    digitalWrite(led_pin[L], LOW);
-
-    if (ft_but[R][0] == HIGH && ft_but[R][1] == HIGH) {
-
-      if (state == STANCE_U) {
-        state = FLIGHT_U;
-        trigger = L_OFF;
-      }
-    }
   }
 
 }//********c_state END********//
+
+//////////////////////////////////////////////////////////////////////////////
+//LED function
+void LED(void) {
+  switch (state) {
+    case FLIGHT_U:
+      digitalWrite(LED_pin[FLIGHT_U], HIGH);
+      break;
+    case FLIGHT_D:
+      digitalWrite(LED_pin[FLIGHT_D], HIGH);
+      break;
+    case STANCE_D:
+      digitalWrite(LED_pin[STANCE_D], HIGH);
+      break;
+    case STANCE_U:
+      digitalWrite(LED_pin[STANCE_U], HIGH);
+      break;
+  }
+}//********LED END********//
 
 //////////////////////////////////////////////////////////////////////////////
 //ISRs to count encoder pulses
