@@ -93,8 +93,8 @@ int lim_swt[4];   //limit switch states
 #define L 1
 
 //initial L2 and L3 angles in degrees
-double init_th[2][2] = {{00, 90},   //Right th2(hip), right th3(knee)
-  {60, 90}                          //Left th2(hip), left th3(knee)
+double init_th[2][2] = {{00, 00},   //Right th2(hip), right th3(knee)
+  {0, 0}                          //Left th2(hip), left th3(knee)
 };
 
 //Encoder pulses
@@ -245,8 +245,8 @@ void loop() {
   th[R][th2] = (angle(mot_pls[RHFE]));
   th[L][th2] = (angle(mot_pls[LHFE]));
 
-  th[R][th3] = ((angle(mot_pls[RKFE]) + init_th[R][th3]) / 2) - (angle(mot_pls[RHFE]) - init_th[R][th2]);
-  th[L][th3] = ((angle(mot_pls[LKFE]) + init_th[L][th3]) / 2) - (angle(mot_pls[LHFE]) - init_th[L][th2]);
+  th[R][th3] = ((angle(mot_pls[RKFE]) + init_th[R][th3]) / 2); //- (angle(mot_pls[RHFE]) - init_th[R][th2]);
+  th[L][th3] = ((angle(mot_pls[LKFE]) + init_th[L][th3]) / 2); //- (angle(mot_pls[LHFE]) - init_th[L][th2]);
 
   //Ft push button triggers
   for (int i = 0; i < 2; i++) {
@@ -273,7 +273,7 @@ void loop() {
     PID_param[i][ip] = mot_pls[i];
   }
 
-  // PID set points
+  // PID setpoints
   //* Sets within PID function * !!
   PID_param[RHFE][sp] = ((double)20 / 360) * PPR;
   PID_param[LHFE][sp] = ((double)30 / 360) * PPR;
