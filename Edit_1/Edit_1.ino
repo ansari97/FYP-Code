@@ -46,9 +46,9 @@ double duration;
 double height = 0;
 double max_h = 0, p_max_h;    //Previous maximum height stores maximum height of previous hop when max_h variable is reset
 double min_h = 1000;          //must be greater than starting height of robot
-double p1_h = 0;
-double p2_h = 0;
-double p3_h = 0;
+double p_h = 0;
+//double p2_h = 0;
+//double p3_h = 0;
 double v1;
 double v2;
 
@@ -259,6 +259,11 @@ void loop() {
     lim_swt[i] = digitalRead(lim_swt_pin[i]);
   }
 
+  //Turn off state LEDs
+  for (int i = 0; i < 4; i++) {
+    digitalWrite(LED_pin[i], LOW);
+  }
+
   //Checks limit switches state for RKFE and LKFE and stops them when limit switch pins read LOW (pressed); RHFE and LHFE are attached to interrupts
   if (lim_swt[RKFE] == LOW) {
     mot_stop_RKFE();
@@ -331,7 +336,7 @@ void loop() {
   //Serial.print("LHFE Sp: ");
   //Serial.print(PID_param[LHFE][sp]);
 
-  //Serial.print("  ");
+  Serial.print("  ");
 
   Serial.print("LHFE Ip: ");
   Serial.print(th[L][th2]);
@@ -396,10 +401,10 @@ void loop() {
   }
 
   //Check v1(delta h); v1 is positive in vertical up direction
-  v1 = height - p1_h;
+  v1 = height - p_h;
 
   //Update previous height
-  p1_h = height;
+  p_h = height;
 
 
 
