@@ -228,7 +228,7 @@ void setup() {
   PID_LKFE.SetOutputLimits(-200, 200);   //this is the MAX PWM value to move motor
 
   //Begins serial communication
-  Serial.begin(9600);
+  Serial.begin(115200);
 
 }////////////////////////////////setup() END///////////////////////////////////
 
@@ -293,10 +293,10 @@ void loop() {
   //PID_LKFE.Compute();
 
 
-  Serial.print("RHFE Op: ");
-  Serial.print(PID_param[RHFE][op]);
+  //Serial.print("RHFE Op: ");
+  //Serial.print(PID_param[RHFE][op]);
 
-  Serial.print("  ");
+  //Serial.print("  ");
 
   //PID output to motor
   // Set within PID function !!
@@ -313,8 +313,8 @@ void loop() {
 
   //Serial.print("  ");
 
-  Serial.print("RHFE Sp: ");
-  Serial.print(PID_param[RHFE][sp]);
+  //Serial.print("RHFE Sp: ");
+  //Serial.print(PID_param[RHFE][sp]);
 
   Serial.print("  ");
 
@@ -328,13 +328,13 @@ void loop() {
 
   //Serial.print("  ");
 
-  //  Serial.print("LHFE Sp: ");
+  //Serial.print("LHFE Sp: ");
   //Serial.print(PID_param[LHFE][sp]);
 
   //Serial.print("  ");
 
-  //Serial.print("LHFE Ip: ");
-  //Serial.print(PID_param[LHFE][ip]);
+  Serial.print("LHFE Ip: ");
+  Serial.print(th[L][th2]);
 
   //Serial.print("  ");
 
@@ -346,10 +346,10 @@ void loop() {
   //Serial.print("LKFE Sp: ");
   //Serial.print(PID_param[LKFE][sp]);
 
-  //Serial.print("  ");
+  Serial.print("  ");
 
-  //Serial.print("LKFE Ip: ");
-  //Serial.print(PID_param[LKFE][ip]);
+  Serial.print("LKFE Ip: ");
+  Serial.print(th[L][th3]);
 
   //Serial.print("  ");
 
@@ -361,10 +361,10 @@ void loop() {
   //Serial.print("RKFE Sp: ");
   //Serial.print(PID_param[RKFE][sp]);
 
-  //Serial.print("  ");
+  Serial.print("  ");
 
-  //Serial.print("RKFE Ip: ");
-  //Serial.print(PID_param[RKFE][ip]);
+  Serial.print("RKFE Ip: ");
+  Serial.print(th[R][th3]);
 
   //*************************//
   //US sensor
