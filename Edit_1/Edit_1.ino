@@ -11,7 +11,12 @@ void enc_pls1(void);
 void enc_pls2(void);
 void enc_pls3(void);
 
+void c_state(void);
+void LED(void);
+
+void mot_PID(int, double, long);
 void pwm_out(int, int);
+
 
 //***************************Variables and Pin Numbers***************************//
 //Sequence based on items
