@@ -38,8 +38,8 @@ void pwm_out(int, int);
 int trigger, state = FLIGHT_U;
 
 //US sensor
-#define usoPin 38
-#define usiPin 39
+#define usoPin 35
+#define usiPin 37
 
 //US sensor variable
 double duration;
@@ -66,10 +66,10 @@ double v2;
 #define encB 4
 
 //Motor pins
-const int mot[4][5] = {{5, 23, 22, 21, 24},                            //mot[0]: R_HFE
-  {6, 25, 26, 20, 27},                                                 //mot[1]: L_HFE
-  {7, 29, 28, 19, 30},                                                 //mot[2]: R_KFE
-  {8, 31, 32, 18, 33}                                                  //mot[3]: L_KFE
+const int mot[4][5] = {{5, 24, 22, 21, 27},                            //mot[0]: R_HFE
+  {6, 30, 32, 20, 29},                                                 //mot[1]: L_HFE
+  {7, 28, 26, 19, 31},                                                 //mot[2]: R_KFE
+  {8, 34, 36, 18, 33}                                                  //mot[3]: L_KFE
 };
 
 //Pulses per revolution of motor encoders
@@ -80,7 +80,7 @@ const int mot[4][5] = {{5, 23, 22, 21, 24},                            //mot[0]:
 //#define B 1
 
 //Limit switch pins (RHFE, LHFE, RKFE, LKFE)
-const int lim_swt_pin[4] = {2, 3, 40, 41};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
+const int lim_swt_pin[4] = {2, 3, 23, 25};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
 int lim_swt[4];   //limit switch states
 
 //Angle reference constants for arrays
@@ -145,7 +145,7 @@ PID PID_LKFE(&PID_param[LKFE][ip], &PID_param[LKFE][op], &PID_param[LKFE][sp], P
 
 //push buttons; Check debouncing
 
-const int ft_but_pin[2][2] = {{34, 35}, {36, 37}};
+const int ft_but_pin[2][2] = {{38, 40}, {42, 44}};
 int ft_but[2][2];// = {{HIGH, HIGH},   //Right 1 and right 2
 //{HIGH, HIGH}                      //Left 1 and left 2
 //};
