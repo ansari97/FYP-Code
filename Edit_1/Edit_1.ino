@@ -204,8 +204,8 @@ void setup() {
   }
 
   //sets 31KHz PWM to prevent motor noise
-  TCCR3B &= ~ 7; TCCR3B |= 3;   // pins 2, 3, 5
-  TCCR4B &= ~ 7; TCCR4B |= 3;   // pins 6, 7, 8
+  TCCR3B &= ~ 7; TCCR3B |= 1;   // pins 2, 3, 5
+  TCCR4B &= ~ 7; TCCR4B |= 1;   // pins 6, 7, 8
 
   //Sets sampling time and PID PWM ouptut limits for all PID controllers
   PID_RHFE.SetMode(AUTOMATIC);           //sets PID in Auto mode
@@ -452,10 +452,11 @@ void loop() {
 
   //Light up LEDs based on state
   LED();
-  //Serial.print("  ");
+  
+  Serial.print("  ");
 
-  //Serial.print("Trigger: ");
-  /*
+  Serial.print("Trigger: ");
+  
     switch (trigger) {
       case MAX:
         Serial.print("MAX");
@@ -473,9 +474,9 @@ void loop() {
         Serial.print("INTERMEDIATE");
         break;
     }
-  */
+  
 
-  /*
+  
     Serial.print("  ");
 
     Serial.print("state: ");
@@ -494,7 +495,7 @@ void loop() {
         Serial.print("FLIGHT_U");
         break;
     }
-  */
+  
 
   Serial.println("");
 
