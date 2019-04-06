@@ -109,10 +109,10 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 #define kd 2
 
 // PID gains (Kp, Ki, Kd)
-double PID_k[4][3] = {{1, 0, 0.0},    //RHFE
-  {0, 0, 0.0},                      //LHFE
-  {0, 0, 0.0},                      //RKFE
-  {0, 0, 0.0}                       //LKFE
+double PID_k[4][3] = {{10, 0, 0.0},    //RHFE
+  {10, 0, 0.0},                      //LHFE
+  {10, 0, 0.0},                      //RKFE
+  {10, 0, 0.0}                       //LKFE
 };
 
 //PID parameter constants
@@ -280,11 +280,11 @@ void loop() {
   PID_param[LKFE][ip] = th[L][th3];
 
 
-  // PID setpoints
+  // PID setpoints in deg
   //* Sets within PID function * !!
-  PID_param[RHFE][sp] = 10;
-  PID_param[LHFE][sp] = 10;
-  PID_param[RKFE][sp] = 20;
+  PID_param[RHFE][sp] = 20;
+  PID_param[LHFE][sp] = 20;
+  PID_param[RKFE][sp] = 40;
   PID_param[LKFE][sp] = 20;
 
   //Serial.print("RHFE Op: ");
@@ -294,10 +294,10 @@ void loop() {
 
   //Compute PID output
   // * Sets within PID function * !!
-  //PID_RHFE.Compute();
-  //PID_LHFE.Compute();
-  //PID_RKFE.Compute();
-  //PID_LKFE.Compute();
+  PID_RHFE.Compute();
+  PID_LHFE.Compute();
+  PID_RKFE.Compute();
+  PID_LKFE.Compute();
 
 
   //Serial.print("RHFE Op: ");
@@ -315,63 +315,74 @@ void loop() {
   //pwm_out(RHFE, PID_param[RHFE][op]);
   //pwm_out(LKFE, PID_param[LKFE][op]);
 
-  //Serial.print("RHFE Op/PWM: ");
-  //Serial.print(PID_param[RHFE][op]);
+/*
+  Serial.print("RHFE Op/PWM: ");
+  Serial.print(PID_param[RHFE][op]);
 
-  //Serial.print("  ");
 
-  //Serial.print("RHFE Sp: ");
-  //Serial.print(PID_param[RHFE][sp]);
+  Serial.print("  ");
+*/
+
+  Serial.print("RHFE Sp: ");
+  Serial.print(PID_param[RHFE][sp]);
 
   Serial.print("  ");
 
   Serial.print("RHFE Ip: ");
   Serial.print(th[R][th2]);
 
-  //Serial.print("  ");
+/*
+  Serial.print("  ");
 
-  //Serial.print("LHFE Op/PWM: ");
-  // Serial.print(PID_param[LHFE][op]);
+  Serial.print("LHFE Op/PWM: ");
+   Serial.print(PID_param[LHFE][op]);
+*/
 
-  //Serial.print("  ");
+  Serial.print("  ");
 
-  //Serial.print("LHFE Sp: ");
-  //Serial.print(PID_param[LHFE][sp]);
+  Serial.print("LHFE Sp: ");
+  Serial.print(PID_param[LHFE][sp]);
 
   Serial.print("  ");
 
   Serial.print("LHFE Ip: ");
   Serial.print(th[L][th2]);
 
-  //Serial.print("  ");
+/*
+  Serial.print("  ");
 
-  //Serial.print("LKFE Op/PWM: ");
-  // Serial.print(PID_param[LKFE][op]);
+  Serial.print("RKFE Op/PWM: ");
+  Serial.print(PID_param[RKFE][op]);
+*/
 
-  //Serial.print("  ");
+  Serial.print("  ");
 
-  //Serial.print("LKFE Sp: ");
-  //Serial.print(PID_param[LKFE][sp]);
+  Serial.print("RKFE Sp: ");
+  Serial.print(PID_param[RKFE][sp]);
+
+  Serial.print("  ");
+
+  Serial.print("RKFE Ip: ");
+  Serial.print(th[R][th3]);
+
+/*
+  Serial.print("  ");
+
+  Serial.print("LKFE Op/PWM: ");
+  Serial.print(PID_param[LKFE][op]);
+*/
+
+  Serial.print("  ");
+
+  Serial.print("LKFE Sp: ");
+  Serial.print(PID_param[LKFE][sp]);
 
   Serial.print("  ");
 
   Serial.print("LKFE Ip: ");
   Serial.print(th[L][th3]);
 
-  //Serial.print("  ");
 
-  //Serial.print("RKFE Op/PWM: ");
-  // Serial.print(PID_param[RKFE][op]);
-
-  //Serial.print("  ");
-
-  //Serial.print("RKFE Sp: ");
-  //Serial.print(PID_param[RKFE][sp]);
-
-  Serial.print("  ");
-
-  Serial.print("RKFE Ip: ");
-  Serial.print(th[R][th3]);
 
   //*************************//
   //US sensor
@@ -411,19 +422,19 @@ void loop() {
 
 
   // Prints the height on the Serial Monitor
-  Serial.print("  ");
-  Serial.print("height: ");
-  Serial.print(height);
+  //Serial.print("  ");
+  //Serial.print("height: ");
+  //Serial.print(height);
 
-  Serial.print("  ");
+  //Serial.print("  ");
 
-  Serial.print("max height: ");
-  Serial.print(max_h);
+  //Serial.print("max height: ");
+  //Serial.print(max_h);
 
-  Serial.print("  ");
+  //Serial.print("  ");
 
-  Serial.print("min height: ");
-  Serial.print(min_h);
+  //Serial.print("min height: ");
+  //Serial.print(min_h);
 
   //Make a function:check_foot_trigger() !!
 
@@ -432,10 +443,10 @@ void loop() {
 
   //Light up LEDs based on state
   LED();
-  Serial.print("  ");
+  //Serial.print("  ");
 
-  Serial.print("Trigger: ");
-
+  //Serial.print("Trigger: ");
+/*
   switch (trigger) {
     case MAX:
       Serial.print("MAX");
@@ -453,7 +464,9 @@ void loop() {
       Serial.print("INTERMEDIATE");
       break;
   }
+  */
 
+/*
   Serial.print("  ");
 
   Serial.print("state: ");
@@ -472,6 +485,7 @@ void loop() {
       Serial.print("FLIGHT_U");
       break;
   }
+  */
 
   Serial.println("");
 
