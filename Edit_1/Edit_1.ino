@@ -37,8 +37,8 @@ void pwm_out(int, int);
 int trigger, state = FLIGHT_U;
 
 //US sensor
-#define usoPin 35
-#define usiPin 37
+#define usoPin 35   //Trigger pin
+#define usiPin 37   //Echo pin
 
 //US sensor variable
 double duration;
