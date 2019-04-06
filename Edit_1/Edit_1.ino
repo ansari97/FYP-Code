@@ -109,7 +109,7 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 #define kd 2
 
 // PID gains (Kp, Ki, Kd)
-double PID_k[4][3] = {{0, 0, 0.0},    //RHFE
+double PID_k[4][3] = {{1, 0, 0.0},    //RHFE
   {0, 0, 0.0},                      //LHFE
   {0, 0, 0.0},                      //RKFE
   {0, 0, 0.0}                       //LKFE
@@ -272,18 +272,20 @@ void loop() {
     mot_stop_LKFE();
   }
 
-  //PID input is the encoder output in pulses
+  //PID input is the current angle of link in degrees
   // Sets at the beginning of loop() function
-  for (int i = 0; i < 4; i++) {
-    PID_param[i][ip] = mot_pls[i];
-  }
+  PID_param[RHFE][ip] = th[R][th2];
+  PID_param[LHFE][ip] = th[L][th2];
+  PID_param[RKFE][ip] = th[R][th3];
+  PID_param[LKFE][ip] = th[L][th3];
+
 
   // PID setpoints
   //* Sets within PID function * !!
-  PID_param[RHFE][sp] = ((double)20 / 360) * PPR;
-  PID_param[LHFE][sp] = ((double)30 / 360) * PPR;
-  PID_param[RKFE][sp] = ((double)30 / 360) * PPR;
-  PID_param[LKFE][sp] = ((double)30 / 360) * PPR;
+  PID_param[RHFE][sp] = 10;
+  PID_param[LHFE][sp] = 10;
+  PID_param[RKFE][sp] = 20;
+  PID_param[LKFE][sp] = 20;
 
   //Serial.print("RHFE Op: ");
   //Serial.print(PID_param[RHFE][op]);
@@ -428,8 +430,8 @@ void loop() {
   //Check state
   c_state();
 
-//Light up LEDs based on state
-LED();
+  //Light up LEDs based on state
+  LED();
   Serial.print("  ");
 
   Serial.print("Trigger: ");
