@@ -272,20 +272,20 @@ void loop() {
   //PID input is the current angle of link in degrees
   // Sets at the beginning of loop() function
   /*
-  PID_param[RHFE][ip] = th[R][th2];
-  PID_param[LHFE][ip] = th[L][th2];
-  PID_param[RKFE][ip] = th[R][th3];
-  PID_param[LKFE][ip] = th[L][th3];
-*/
+    PID_param[RHFE][ip] = th[R][th2];
+    PID_param[LHFE][ip] = th[L][th2];
+    PID_param[RKFE][ip] = th[R][th3];
+    PID_param[LKFE][ip] = th[L][th3];
+  */
 
   // PID setpoints in deg
   //* Sets within PID function * !!
   /*
-  PID_param[RHFE][sp] = 20;
-  PID_param[LHFE][sp] = 20;
-  PID_param[RKFE][sp] = 40;
-  PID_param[LKFE][sp] = 20;
-*/
+    PID_param[RHFE][sp] = 20;
+    PID_param[LHFE][sp] = 20;
+    PID_param[RKFE][sp] = 40;
+    PID_param[LKFE][sp] = 20;
+  */
 
   //Serial.print("RHFE Op: ");
   //Serial.print(PID_param[RHFE][op]);
@@ -295,11 +295,11 @@ void loop() {
   //Compute PID output
   // * Sets within PID function * !!
   /*
-  PID_RHFE.Compute();
-  PID_LHFE.Compute();
-  PID_RKFE.Compute();
-  PID_LKFE.Compute();
-*/
+    PID_RHFE.Compute();
+    PID_LHFE.Compute();
+    PID_RKFE.Compute();
+    PID_LKFE.Compute();
+  */
 
   //Serial.print("RHFE Op: ");
   //Serial.print(PID_param[RHFE][op]);
@@ -309,30 +309,28 @@ void loop() {
   //PID output to motor
   // Set within PID function !!
   /*
-  for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++) {
     pwm_out(i, PID_param[i][op]);
-  }
-*/
+    }
+  */
 
-
-mot_PID(RHFE, 20, th[R][th2]);
-mot_PID(LHFE, 20, th[L][th2]);
-mot_PID(RKFE, 20, th[R][th3]);
-mot_PID(LKFE, 20, th[L][th3]);
-
+  mot_PID(RHFE, 20, th[R][th2]);    //invoking PID for RHFE motor with sp of 20 deg
+  mot_PID(LHFE, 20, th[L][th2]);    //invoking PID for LHFE motor with sp of 20 deg
+  mot_PID(RKFE, 20, th[R][th3]);    //invoking PID for RKFE motor with sp of 20 deg
+  mot_PID(LKFE, 20, th[L][th3]);    //invoking PID for LHFE motor with sp of 20 deg
 
 
 
   //pwm_out(RHFE, PID_param[RHFE][op]);
   //pwm_out(LKFE, PID_param[LKFE][op]);
 
-/*
-  Serial.print("RHFE Op/PWM: ");
-  Serial.print(PID_param[RHFE][op]);
+  /*
+    Serial.print("RHFE Op/PWM: ");
+    Serial.print(PID_param[RHFE][op]);
 
 
-  Serial.print("  ");
-*/
+    Serial.print("  ");
+  */
 
   Serial.print("RHFE Sp: ");
   Serial.print(PID_param[RHFE][sp]);
@@ -342,12 +340,12 @@ mot_PID(LKFE, 20, th[L][th3]);
   Serial.print("RHFE Ip: ");
   Serial.print(th[R][th2]);
 
-/*
-  Serial.print("  ");
+  /*
+    Serial.print("  ");
 
-  Serial.print("LHFE Op/PWM: ");
-   Serial.print(PID_param[LHFE][op]);
-*/
+    Serial.print("LHFE Op/PWM: ");
+     Serial.print(PID_param[LHFE][op]);
+  */
 
   Serial.print("  ");
 
@@ -359,12 +357,12 @@ mot_PID(LKFE, 20, th[L][th3]);
   Serial.print("LHFE Ip: ");
   Serial.print(th[L][th2]);
 
-/*
-  Serial.print("  ");
+  /*
+    Serial.print("  ");
 
-  Serial.print("RKFE Op/PWM: ");
-  Serial.print(PID_param[RKFE][op]);
-*/
+    Serial.print("RKFE Op/PWM: ");
+    Serial.print(PID_param[RKFE][op]);
+  */
 
   Serial.print("  ");
 
@@ -376,12 +374,12 @@ mot_PID(LKFE, 20, th[L][th3]);
   Serial.print("RKFE Ip: ");
   Serial.print(th[R][th3]);
 
-/*
-  Serial.print("  ");
+  /*
+    Serial.print("  ");
 
-  Serial.print("LKFE Op/PWM: ");
-  Serial.print(PID_param[LKFE][op]);
-*/
+    Serial.print("LKFE Op/PWM: ");
+    Serial.print(PID_param[LKFE][op]);
+  */
 
   Serial.print("  ");
 
@@ -457,45 +455,45 @@ mot_PID(LKFE, 20, th[L][th3]);
   //Serial.print("  ");
 
   //Serial.print("Trigger: ");
-/*
-  switch (trigger) {
-    case MAX:
-      Serial.print("MAX");
-      break;
-    case T_DOWN:
-      Serial.print("T_DOWN");
-      break;
-    case MIN:
-      Serial.print("MIN");
-      break;
-    case L_OFF:
-      Serial.print("L_OFF");
-      break;
-    case INTERMEDIATE:
-      Serial.print("INTERMEDIATE");
-      break;
-  }
+  /*
+    switch (trigger) {
+      case MAX:
+        Serial.print("MAX");
+        break;
+      case T_DOWN:
+        Serial.print("T_DOWN");
+        break;
+      case MIN:
+        Serial.print("MIN");
+        break;
+      case L_OFF:
+        Serial.print("L_OFF");
+        break;
+      case INTERMEDIATE:
+        Serial.print("INTERMEDIATE");
+        break;
+    }
   */
 
-/*
-  Serial.print("  ");
+  /*
+    Serial.print("  ");
 
-  Serial.print("state: ");
+    Serial.print("state: ");
 
-  switch (state) {
-    case FLIGHT_D:
-      Serial.print("FLIGHT_D");
-      break;
-    case STANCE_D:
-      Serial.print("STANCE_D");
-      break;
-    case STANCE_U:
-      Serial.print("STANCE_U");
-      break;
-    case FLIGHT_U:
-      Serial.print("FLIGHT_U");
-      break;
-  }
+    switch (state) {
+      case FLIGHT_D:
+        Serial.print("FLIGHT_D");
+        break;
+      case STANCE_D:
+        Serial.print("STANCE_D");
+        break;
+      case STANCE_U:
+        Serial.print("STANCE_U");
+        break;
+      case FLIGHT_U:
+        Serial.print("FLIGHT_U");
+        break;
+    }
   */
 
   Serial.println("");
