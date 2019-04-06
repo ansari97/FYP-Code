@@ -1,5 +1,4 @@
 #include <PID_v1.h>
-#include <SharpIR.h>
 
 //***************************Function Declarations***************************//
 
@@ -14,7 +13,7 @@ void enc_pls3(void);
 void c_state(void);
 void LED(void);
 
-void mot_PID(int, double, long);
+void mot_PID(int, double, double);
 void pwm_out(int, int);
 
 
@@ -274,18 +273,21 @@ void loop() {
 
   //PID input is the current angle of link in degrees
   // Sets at the beginning of loop() function
+  /*
   PID_param[RHFE][ip] = th[R][th2];
   PID_param[LHFE][ip] = th[L][th2];
   PID_param[RKFE][ip] = th[R][th3];
   PID_param[LKFE][ip] = th[L][th3];
-
+*/
 
   // PID setpoints in deg
   //* Sets within PID function * !!
+  /*
   PID_param[RHFE][sp] = 20;
   PID_param[LHFE][sp] = 20;
   PID_param[RKFE][sp] = 40;
   PID_param[LKFE][sp] = 20;
+*/
 
   //Serial.print("RHFE Op: ");
   //Serial.print(PID_param[RHFE][op]);
@@ -294,11 +296,12 @@ void loop() {
 
   //Compute PID output
   // * Sets within PID function * !!
+  /*
   PID_RHFE.Compute();
   PID_LHFE.Compute();
   PID_RKFE.Compute();
   PID_LKFE.Compute();
-
+*/
 
   //Serial.print("RHFE Op: ");
   //Serial.print(PID_param[RHFE][op]);
@@ -307,9 +310,19 @@ void loop() {
 
   //PID output to motor
   // Set within PID function !!
+  /*
   for (int i = 0; i < 4; i++) {
     pwm_out(i, PID_param[i][op]);
   }
+*/
+
+
+mot_PID(RHFE, 20, th[R][th2]);
+mot_PID(LHFE, 20, th[L][th2]);
+mot_PID(RKFE, 20, th[R][th3]);
+mot_PID(LKFE, 20, th[L][th3]);
+
+
 
 
   //pwm_out(RHFE, PID_param[RHFE][op]);
@@ -497,9 +510,9 @@ void loop() {
 //Motor PID function; Setpoint in deg; mot_pls in pulses
 //Remove mot_pls since PID_param[ip] already assigned mot_pls?? !!
 //Add max/min PID PWM output !!
-void mot_PID(int motnum, double th_sp, long mot_pls) {
-  PID_param[motnum][sp] = pulse(th_sp);
-  PID_param[motnum][ip] = mot_pls;
+void mot_PID(int motnum, double th_sp, double th_ip) {
+  PID_param[motnum][sp] = th_sp;
+  PID_param[motnum][ip] = th_ip;
 
   switch (motnum) {
     case 0:
