@@ -46,8 +46,6 @@ double height = 0;
 double max_h = 0, p_max_h;    //Previous maximum height stores maximum height of previous hop when max_h variable is reset
 double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
-//double p2_h = 0;
-//double p3_h = 0;
 double v1;
 double v2;
 
