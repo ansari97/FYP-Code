@@ -13,7 +13,7 @@ void enc_pls3(void);
 void c_state(void);
 void LED(void);
 
-void mot_PID(int, double, double);
+void mot_PID(int, double);
 void pwm_out(int, int);
 
 
@@ -271,12 +271,12 @@ void loop() {
 
   //PID input is the current angle of link in degrees
   // Sets at the beginning of loop() function
-  /*
+  
     PID_param[RHFE][ip] = th[R][th2];
     PID_param[LHFE][ip] = th[L][th2];
     PID_param[RKFE][ip] = th[R][th3];
     PID_param[LKFE][ip] = th[L][th3];
-  */
+  
 
   // PID setpoints in deg
   //* Sets within PID function * !!
@@ -314,12 +314,11 @@ void loop() {
     }
   */
 
-  mot_PID(RHFE, 20, th[R][th2]);    //invoking PID for RHFE motor with sp of 20 deg
-  mot_PID(LHFE, 20, th[L][th2]);    //invoking PID for LHFE motor with sp of 20 deg
-  mot_PID(RKFE, 20, th[R][th3]);    //invoking PID for RKFE motor with sp of 20 deg
-  mot_PID(LKFE, 20, th[L][th3]);    //invoking PID for LHFE motor with sp of 20 deg
-
-
+//Invoke motor PID
+  mot_PID(RHFE, 20);    //invoking PID for RHFE motor with sp of 20 deg
+  mot_PID(LHFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
+  mot_PID(RKFE, 20);    //invoking PID for RKFE motor with sp of 20 deg
+  mot_PID(LKFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
 
   //pwm_out(RHFE, PID_param[RHFE][op]);
   //pwm_out(LKFE, PID_param[LKFE][op]);
@@ -507,9 +506,9 @@ void loop() {
 //Motor PID function; Setpoint in deg; mot_pls in pulses
 //Remove mot_pls since PID_param[ip] already assigned mot_pls?? !!
 //Add max/min PID PWM output !!
-void mot_PID(int motnum, double th_sp, double th_ip) {
+void mot_PID(int motnum, double th_sp) {
   PID_param[motnum][sp] = th_sp;
-  PID_param[motnum][ip] = th_ip;
+  //PID_param[motnum][ip] = th_ip;
 
   switch (motnum) {
     case 0:
