@@ -106,10 +106,10 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 #define kd 2
 
 // PID gains (Kp, Ki, Kd)
-double PID_k[4][3] = {{10, 0, 0.0},    //RHFE
-  {10, 0, 0.0},                      //LHFE
-  {10, 0, 0.0},                      //RKFE
-  {10, 0, 0.0}                       //LKFE
+double PID_k[4][3] = {{0, 0, 0.0},    //RHFE
+  {0, 0, 0.0},                      //LHFE
+  {0, 0, 0.0},                      //RKFE
+  {0, 0, 0.0}                       //LKFE
 };
 
 //PID parameter constants
