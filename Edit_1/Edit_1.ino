@@ -77,7 +77,7 @@ const int mot[4][5] = {{5, 24, 22, 21, 27},                            //mot[0]:
 //#define B 1
 
 //Limit switch pins (RHFE, LHFE, RKFE, LKFE)
-const int lim_swt_pin[4] = {2, 3, 23, 25};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
+const int lim_swt_pin[4] = {3, 41, 23, 25};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
 int lim_swt[4];   //limit switch states
 
 //Angle reference constants for arrays
