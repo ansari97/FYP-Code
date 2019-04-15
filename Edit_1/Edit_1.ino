@@ -48,6 +48,7 @@ double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
 double v1;
 double v2;
+int n_thresh = 5;             //Noise threshold
 
 //motor number constants
 #define RHFE 0
@@ -285,20 +286,11 @@ void loop() {
   PID_param[RKFE][ip] = th[R][th3];
   PID_param[LKFE][ip] = th[L][th3];
 
-  /*
-    for (int i = 0; i < 4; i++) {
-    pwm_out(i, PID_param[i][op]);
-    }
-  */
-
   //Invoke motor PID
   mot_PID(RHFE, 20);    //invoking PID for RHFE motor with sp of 20 deg
   mot_PID(LHFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
   mot_PID(RKFE, 20);    //invoking PID for RKFE motor with sp of 20 deg
   mot_PID(LKFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
-
-  //pwm_out(RHFE, PID_param[RHFE][op]);
-  //pwm_out(LKFE, PID_param[LKFE][op]);
 
   /*
     Serial.print("RHFE Op/PWM: ");
