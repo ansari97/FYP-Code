@@ -16,9 +16,16 @@ void LED(void);
 void mot_PID(int, double);
 void pwm_out(int, int);
 
+void mot_stop_RHFE();
+void mot_stop_LHFE();
+void mot_stop_RKFE();
+void mot_stop_LKFE();
+
 
 //***************************Variables and Pin Numbers***************************//
 //Sequence based on items
+
+int loopNum = 0;
 
 //Trigger triggers
 #define MAX 0
@@ -52,7 +59,7 @@ double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
 double v1;
 double v2;
-int n_thresh = 20;             //Noise threshold
+int max_min_thresh = 8, n_thresh = 50;             //Noise threshold
 
 //motor number constants
 #define RHFE 0
@@ -381,21 +388,36 @@ void loop() {
   // Calculating the height in mm
   height = (double) duration * 0.346 / 2; //in mm
 
-  //Check and update maximum height; 3 is threshold for change
-  if (height - max_h > 3) {
+  Serial.print("  ");
+  Serial.print("height: ");
+  Serial.print(height);
+
+  if (loopNum > 1) {
+    if (abs(height - p_h) > n_thresh) {
+      height = p_h;
+    }
+  }
+
+//Check and update maximum height; 3 is threshold for change
+  if (height - max_h > max_min_thresh) {
     max_h = height;
   }
 
   //Check and update minimum height; 3 is threshold for change
-  if (min_h - height > 3) {
+  if (min_h - height > max_min_thresh) {
     min_h = height;
   }
 
   //Check v1(delta h); v1 is positive in vertical up direction
   v1 = height - p_h;
 
+  //Serial.print("  ");
+  //Serial.print("height: ");
+  //Serial.print(height);
+
   //Update previous height
   p_h = height;
+
 
 
 
@@ -468,6 +490,8 @@ void loop() {
 
   Serial.println("");
 
+
+  loopNum++;
 }//////////////////////////////////////////////////////////////////////////////
 
 //************************************Functions************************************//
@@ -519,7 +543,7 @@ void pwm_out(int motnum, int out) {
 void c_state(void) {
 
   //Check for MAX trigger and update trigger and state
-  if (v1 < 0 && v2 > 0 && v1 < -n_thresh)  {
+  if (v1 < 0 && v2 > 0 && v1 < -max_min_thresh)  {
 
     if (state == FLIGHT_U) {
       state = FLIGHT_D;
@@ -528,7 +552,7 @@ void c_state(void) {
   }
 
   //Check for MIN trigger and update trigger and state
-  if (v1 > 0 && v2 < 0 && v1 > n_thresh && (ft_but[L][0] == LOW || ft_but[L][1] == LOW || ft_but[R][0] == LOW || ft_but[R][1] == LOW)) {
+  if (v1 > 0 && v2 < 0 && v1 > max_min_thresh && (ft_but[L][0] == LOW || ft_but[L][1] == LOW || ft_but[R][0] == LOW || ft_but[R][1] == LOW)) {
 
     if (state == STANCE_D) {
       state = STANCE_U;
