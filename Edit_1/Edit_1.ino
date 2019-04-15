@@ -36,6 +36,10 @@ void pwm_out(int, int);
 //trigger and state variables; state is current state; initialize state with FLIGHT_U
 int trigger, state = FLIGHT_U;
 
+//State LED pins
+const int LED_pin[4] = {10, 11, 12, 13};  //one for each state
+
+
 //US sensor
 #define usoPin 35   //Trigger pin
 #define usiPin 37   //Echo pin
@@ -48,7 +52,7 @@ double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
 double v1;
 double v2;
-int n_thresh = 5;             //Noise threshold
+int n_thresh = 20;             //Noise threshold
 
 //motor number constants
 #define RHFE 0
@@ -64,8 +68,8 @@ int n_thresh = 5;             //Noise threshold
 #define encB 4
 
 //Motor pins
-const int mot[4][5] = {{5, 24, 22, 21, 27},                            //mot[0]: R_HFE
-  {6, 30, 32, 20, 29},                                                 //mot[1]: L_HFE
+const int mot[4][5] = {{5, 24, 22, 20, 27},                            //mot[0]: R_HFE
+  {6, 30, 32, 2, 29},                                                 //mot[1]: L_HFE
   {7, 28, 26, 19, 31},                                                 //mot[2]: R_KFE
   {8, 34, 36, 18, 33}                                                  //mot[3]: L_KFE
 };
@@ -138,9 +142,6 @@ PID PID_RHFE(&PID_param[RHFE][ip], &PID_param[RHFE][op], &PID_param[RHFE][sp], P
 PID PID_LHFE(&PID_param[LHFE][ip], &PID_param[LHFE][op], &PID_param[LHFE][sp], PID_k[LHFE][kp], PID_k[LHFE][ki], PID_k[LHFE][kd], DIRECT);
 PID PID_RKFE(&PID_param[RKFE][ip], &PID_param[RKFE][op], &PID_param[RKFE][sp], PID_k[RKFE][kp], PID_k[RKFE][ki], PID_k[RKFE][kd], DIRECT);
 PID PID_LKFE(&PID_param[LKFE][ip], &PID_param[LKFE][op], &PID_param[LKFE][sp], PID_k[LKFE][kp], PID_k[LKFE][ki], PID_k[LKFE][kd], DIRECT);
-
-//State LED pins
-const int LED_pin[4] = {10, 11, 12, 13};  //one for each state
 
 /*
   //Ankle potentiometer
@@ -515,11 +516,10 @@ void pwm_out(int motnum, int out) {
 
 //////////////////////////////////////////////////////////////////////////////
 //State check function
-//returns c_state
 void c_state(void) {
 
   //Check for MAX trigger and update trigger and state
-  if (v1 < 0 && v2 > 0 && v1 < -5)  {
+  if (v1 < 0 && v2 > 0 && v1 < -n_thresh)  {
 
     if (state == FLIGHT_U) {
       state = FLIGHT_D;
@@ -528,7 +528,7 @@ void c_state(void) {
   }
 
   //Check for MIN trigger and update trigger and state
-  if (v1 > 0 && v2 < 0 && v1 > 5 && (ft_but[L][0] == LOW || ft_but[L][1] == LOW || ft_but[R][0] == LOW || ft_but[R][1] == LOW)) {
+  if (v1 > 0 && v2 < 0 && v1 > n_thresh && (ft_but[L][0] == LOW || ft_but[L][1] == LOW || ft_but[R][0] == LOW || ft_but[R][1] == LOW)) {
 
     if (state == STANCE_D) {
       state = STANCE_U;
