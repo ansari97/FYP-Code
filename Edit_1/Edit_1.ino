@@ -392,18 +392,19 @@ void loop() {
   Serial.print("height: ");
   Serial.print(height);
 
+  //Filter out noise based on magnitude
   if (loopNum > 1) {
     if (abs(height - p_h) > n_thresh) {
       height = p_h;
     }
   }
 
-//Check and update maximum height; 3 is threshold for change
+  //Check and update maximum height
   if (height - max_h > max_min_thresh) {
     max_h = height;
   }
 
-  //Check and update minimum height; 3 is threshold for change
+  //Check and update minimum height
   if (min_h - height > max_min_thresh) {
     min_h = height;
   }
@@ -411,14 +412,8 @@ void loop() {
   //Check v1(delta h); v1 is positive in vertical up direction
   v1 = height - p_h;
 
-  //Serial.print("  ");
-  //Serial.print("height: ");
-  //Serial.print(height);
-
   //Update previous height
   p_h = height;
-
-
 
 
   // Prints the height on the Serial Monitor
@@ -426,15 +421,13 @@ void loop() {
   Serial.print("height: ");
   Serial.print(height);
 
-  //Serial.print("  ");
+  Serial.print("  ");
+  Serial.print("max height: ");
+  Serial.print(max_h);
 
-  //Serial.print("max height: ");
-  //Serial.print(max_h);
-
-  //Serial.print("  ");
-
-  //Serial.print("min height: ");
-  //Serial.print(min_h);
+  Serial.print("  ");
+  Serial.print("min height: ");
+  Serial.print(min_h);
 
   //Make a function:check_foot_trigger() !!
 
