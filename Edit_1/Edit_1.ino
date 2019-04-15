@@ -80,6 +80,14 @@ const int mot[4][5] = {{5, 24, 22, 21, 27},                            //mot[0]:
 const int lim_swt_pin[4] = {3, 41, 23, 25};    //pins 2 and 3 on interrupt, rest within loop; 2 limit switches on each pin for each motor
 int lim_swt[4];   //limit switch states
 
+//push buttons; Check debouncing
+
+const int ft_but_pin[2][2] = {{38, 40}, {42, 44}};
+int ft_but[2][2];// = {{HIGH, HIGH},   //Right 1 and right 2
+//{HIGH, HIGH}                      //Left 1 and left 2
+//};
+// Define p_button trigger
+
 //Angle reference constants for arrays
 #define th2 0
 #define th3 1
@@ -130,6 +138,8 @@ PID PID_LHFE(&PID_param[LHFE][ip], &PID_param[LHFE][op], &PID_param[LHFE][sp], P
 PID PID_RKFE(&PID_param[RKFE][ip], &PID_param[RKFE][op], &PID_param[RKFE][sp], PID_k[RKFE][kp], PID_k[RKFE][ki], PID_k[RKFE][kd], DIRECT);
 PID PID_LKFE(&PID_param[LKFE][ip], &PID_param[LKFE][op], &PID_param[LKFE][sp], PID_k[LKFE][kp], PID_k[LKFE][ki], PID_k[LKFE][kd], DIRECT);
 
+//State LED pins
+const int LED_pin[4] = {10, 11, 12, 13};  //one for each state
 
 /*
   //Ankle potentiometer
@@ -139,18 +149,6 @@ PID PID_LKFE(&PID_param[LKFE][ip], &PID_param[LKFE][op], &PID_param[LKFE][sp], P
   const int ank_pin[2] = {A1, A2};
   double ank_ang[2] = {0, 0};
 */
-
-//push buttons; Check debouncing
-
-const int ft_but_pin[2][2] = {{38, 40}, {42, 44}};
-int ft_but[2][2];// = {{HIGH, HIGH},   //Right 1 and right 2
-//{HIGH, HIGH}                      //Left 1 and left 2
-//};
-// Define p_button trigger
-
-//Touchdown LED pins
-const int LED_pin[4] = {10, 11, 12, 13};  //one for each state
-
 
 //***************************       setup()       ***************************//
 
@@ -166,13 +164,12 @@ void setup() {
 
   //Attaches interrupt to pin 2 and 3 (RHFE and LHFE)
   //LOW is pin state when limit switches are pressed
-  attachInterrupt(digitalPinToInterrupt(lim_swt[RHFE]), mot_stop_RHFE, LOW);
-  attachInterrupt(digitalPinToInterrupt(lim_swt[LHFE]), mot_stop_LHFE, LOW);
-
-
+  /*
+    attachInterrupt(digitalPinToInterrupt(lim_swt[RHFE]), mot_stop_RHFE, LOW);
+    attachInterrupt(digitalPinToInterrupt(lim_swt[LHFE]), mot_stop_LHFE, LOW);
+  */
 
   //PINMODES
-
   //Sets motor pinmodes
   for (int i = 0; i < 4; i++) {
     pinMode(mot[i][enb], OUTPUT);
@@ -186,11 +183,15 @@ void setup() {
   pinMode(usoPin, OUTPUT); // Sets the usoPin as an Output
   pinMode(usiPin, INPUT);  // Sets the usiPin as an Input
 
-  //Sets Ft push buttons and touchdown led pin modes
+  //Sets Ft push buttons
   for (int i = 0; i < 2; i++) {
-    pinMode(LED_pin[i], OUTPUT);
     pinMode(ft_but_pin[i][0], INPUT);
     pinMode(ft_but_pin[i][1], INPUT);
+  }
+
+  //Sets state led pin modes
+  for (int i = 0; i < 2; i++) {
+    pinMode(LED_pin[i], OUTPUT);
   }
 
   //Sets pinmodes of limitswitches
@@ -251,8 +252,8 @@ void loop() {
     ft_but[i][1] = digitalRead(ft_but_pin[i][1]);
   }
 
-  //reads limit switch states for RKFE and LKFE only (not RHFE and LHFE)
-  for (int i = 2; i < 4; i++) {
+  //reads limit switch states for motor limit switches
+  for (int i = 0; i < 4; i++) {
     lim_swt[i] = digitalRead(lim_swt_pin[i]);
   }
 
@@ -262,52 +263,28 @@ void loop() {
   }
 
   //Checks limit switches state for RKFE and LKFE and stops them when limit switch pins read LOW (pressed); RHFE and LHFE are attached to interrupts
-  if (lim_swt[RKFE] == LOW) {
-    mot_stop_RKFE();
-  }
-  if (lim_swt[LKFE] == LOW) {
-    mot_stop_LKFE();
+  {
+    if (lim_swt[RHFE] == LOW) {
+      mot_stop_RHFE();
+    }
+    if (lim_swt[LHFE] == LOW) {
+      mot_stop_LHFE();
+    }
+    if (lim_swt[RKFE] == LOW) {
+      mot_stop_RKFE();
+    }
+    if (lim_swt[LKFE] == LOW) {
+      mot_stop_LKFE();
+    }
   }
 
   //PID input is the current angle of link in degrees
   // Sets at the beginning of loop() function
-
   PID_param[RHFE][ip] = th[R][th2];
   PID_param[LHFE][ip] = th[L][th2];
   PID_param[RKFE][ip] = th[R][th3];
   PID_param[LKFE][ip] = th[L][th3];
 
-
-  // PID setpoints in deg
-  //* Sets within PID function * !!
-  /*
-    PID_param[RHFE][sp] = 20;
-    PID_param[LHFE][sp] = 20;
-    PID_param[RKFE][sp] = 40;
-    PID_param[LKFE][sp] = 20;
-  */
-
-  //Serial.print("RHFE Op: ");
-  //Serial.print(PID_param[RHFE][op]);
-
-  //Serial.print("  ");
-
-  //Compute PID output
-  // * Sets within PID function * !!
-  /*
-    PID_RHFE.Compute();
-    PID_LHFE.Compute();
-    PID_RKFE.Compute();
-    PID_LKFE.Compute();
-  */
-
-  //Serial.print("RHFE Op: ");
-  //Serial.print(PID_param[RHFE][op]);
-
-  //Serial.print("  ");
-
-  //PID output to motor
-  // Set within PID function !!
   /*
     for (int i = 0; i < 4; i++) {
     pwm_out(i, PID_param[i][op]);
