@@ -234,6 +234,7 @@ void setup() {
 
 void loop() {
 
+  //reset trigger
   trigger = INTERMEDIATE;
 
   // defines relationship b/w mot_pls and link angles
@@ -241,7 +242,6 @@ void loop() {
   // knee angle measured clc from L2 extension; *set ankle angle direction convention* !!
   th[R][th2] = (angle(mot_pls[RHFE]));
   th[L][th2] = (angle(mot_pls[LHFE]));
-
   th[R][th3] = ((angle(mot_pls[RKFE]) + init_th[R][th3]) / 2); //- (angle(mot_pls[RHFE]) - init_th[R][th2]);
   th[L][th3] = ((angle(mot_pls[LKFE]) + init_th[L][th3]) / 2); //- (angle(mot_pls[LHFE]) - init_th[L][th2]);
 
@@ -271,12 +271,12 @@ void loop() {
 
   //PID input is the current angle of link in degrees
   // Sets at the beginning of loop() function
-  
-    PID_param[RHFE][ip] = th[R][th2];
-    PID_param[LHFE][ip] = th[L][th2];
-    PID_param[RKFE][ip] = th[R][th3];
-    PID_param[LKFE][ip] = th[L][th3];
-  
+
+  PID_param[RHFE][ip] = th[R][th2];
+  PID_param[LHFE][ip] = th[L][th2];
+  PID_param[RKFE][ip] = th[R][th3];
+  PID_param[LKFE][ip] = th[L][th3];
+
 
   // PID setpoints in deg
   //* Sets within PID function * !!
@@ -314,7 +314,7 @@ void loop() {
     }
   */
 
-//Invoke motor PID
+  //Invoke motor PID
   mot_PID(RHFE, 20);    //invoking PID for RHFE motor with sp of 20 deg
   mot_PID(LHFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
   mot_PID(RKFE, 20);    //invoking PID for RKFE motor with sp of 20 deg
@@ -430,9 +430,9 @@ void loop() {
 
 
   // Prints the height on the Serial Monitor
-  //Serial.print("  ");
-  //Serial.print("height: ");
-  //Serial.print(height);
+  Serial.print("  ");
+  Serial.print("height: ");
+  Serial.print(height);
 
   //Serial.print("  ");
 
@@ -451,50 +451,50 @@ void loop() {
 
   //Light up LEDs based on state
   LED();
-  
+
   Serial.print("  ");
 
   Serial.print("Trigger: ");
-  
-    switch (trigger) {
-      case MAX:
-        Serial.print("MAX");
-        break;
-      case T_DOWN:
-        Serial.print("T_DOWN");
-        break;
-      case MIN:
-        Serial.print("MIN");
-        break;
-      case L_OFF:
-        Serial.print("L_OFF");
-        break;
-      case INTERMEDIATE:
-        Serial.print("INTERMEDIATE");
-        break;
-    }
-  
 
-  
-    Serial.print("  ");
+  switch (trigger) {
+    case MAX:
+      Serial.print("MAX");
+      break;
+    case T_DOWN:
+      Serial.print("T_DOWN");
+      break;
+    case MIN:
+      Serial.print("MIN");
+      break;
+    case L_OFF:
+      Serial.print("L_OFF");
+      break;
+    case INTERMEDIATE:
+      Serial.print("INTERMEDIATE");
+      break;
+  }
 
-    Serial.print("state: ");
 
-    switch (state) {
-      case FLIGHT_D:
-        Serial.print("FLIGHT_D");
-        break;
-      case STANCE_D:
-        Serial.print("STANCE_D");
-        break;
-      case STANCE_U:
-        Serial.print("STANCE_U");
-        break;
-      case FLIGHT_U:
-        Serial.print("FLIGHT_U");
-        break;
-    }
-  
+
+  Serial.print("  ");
+
+  Serial.print("state: ");
+
+  switch (state) {
+    case FLIGHT_D:
+      Serial.print("FLIGHT_D");
+      break;
+    case STANCE_D:
+      Serial.print("STANCE_D");
+      break;
+    case STANCE_U:
+      Serial.print("STANCE_U");
+      break;
+    case FLIGHT_U:
+      Serial.print("FLIGHT_U");
+      break;
+  }
+
 
   Serial.println("");
 
@@ -684,5 +684,3 @@ long pulse(double angle) {
   long pls = ((angle / 360) * PPR);
   return pls;
 }
-
-
