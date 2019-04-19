@@ -78,7 +78,7 @@ int max_min_thresh = 8, n_thresh = 50;             //Noise threshold
 const int mot[4][5] = {{5, 24, 22, 20, 27},                            //mot[0]: R_HFE
   {6, 30, 32, 2, 29},                                                 //mot[1]: L_HFE
   {7, 26, 28, 19, 31},                                                 //mot[2]: R_KFE
-  {8, 34, 36, 18, 33}                                                  //mot[3]: L_KFE
+  {8, 36, 34, 18, 33}                                                  //mot[3]: L_KFE
 };
 
 //Pulses per revolution of motor encoders
@@ -126,10 +126,10 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 #define kd 2
 
 // PID gains (Kp, Ki, Kd)
-double PID_k[4][3] = {{0, 0, 0.0},    //RHFE
-  {0, 0, 0.0},                      //LHFE
+double PID_k[4][3] = {{10, 0, 0.0},    //RHFE
+  {10, 0, 0.0},                      //LHFE
   {10, 0, 0.0},                      //RKFE
-  {0, 0, 0.0}                       //LKFE
+  {10, 0, 0.0}                       //LKFE
 };
 
 //PID parameter constants
@@ -295,7 +295,7 @@ void loop() {
   PID_param[LKFE][ip] = th[L][th3];
 
   //Invoke motor PID
-  mot_PID(RHFE, 20);    //invoking PID for RHFE motor with sp of 20 deg
+  mot_PID(RHFE, -20);    //invoking PID for RHFE motor with sp of 20 deg
   mot_PID(LHFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
   mot_PID(RKFE, 20);    //invoking PID for RKFE motor with sp of 20 deg
   mot_PID(LKFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
@@ -616,7 +616,7 @@ void enc_pls1() {
 }
 
 void enc_pls2() {
-  if (digitalRead(mot[RKFE][encB]) == HIGH) { //Clc positive
+  if (digitalRead(mot[RKFE][encB]) == HIGH) { //Alc positive
     mot_pls[RKFE]++;
   }
   else {
@@ -625,7 +625,7 @@ void enc_pls2() {
 }
 
 void enc_pls3() {
-  if (digitalRead(mot[LKFE][encB]) == HIGH) { //Alc positive
+  if (digitalRead(mot[LKFE][encB]) == LOW) { //Clc positive
     mot_pls[LKFE]++;
   }
   else {
