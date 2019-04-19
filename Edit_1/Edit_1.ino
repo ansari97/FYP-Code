@@ -77,7 +77,7 @@ int max_min_thresh = 8, n_thresh = 50;             //Noise threshold
 //Motor pins
 const int mot[4][5] = {{5, 24, 22, 20, 27},                            //mot[0]: R_HFE
   {6, 30, 32, 2, 29},                                                 //mot[1]: L_HFE
-  {7, 28, 26, 19, 31},                                                 //mot[2]: R_KFE
+  {7, 26, 28, 19, 31},                                                 //mot[2]: R_KFE
   {8, 34, 36, 18, 33}                                                  //mot[3]: L_KFE
 };
 
@@ -128,7 +128,7 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 // PID gains (Kp, Ki, Kd)
 double PID_k[4][3] = {{0, 0, 0.0},    //RHFE
   {0, 0, 0.0},                      //LHFE
-  {0, 0, 0.0},                      //RKFE
+  {10, 0, 0.0},                      //RKFE
   {0, 0, 0.0}                       //LKFE
 };
 
@@ -616,7 +616,7 @@ void enc_pls1() {
 }
 
 void enc_pls2() {
-  if (digitalRead(mot[RKFE][encB]) == LOW) { //Clc positive
+  if (digitalRead(mot[RKFE][encB]) == HIGH) { //Clc positive
     mot_pls[RKFE]++;
   }
   else {
