@@ -139,7 +139,7 @@ double PID_k[4][3] = {{0, 0, 0.0},    //RHFE
 
 //PID paramters: inputs(current position), output(PWM output), setpoint(desired position); all in pulses
 double PID_param[4][3] = {{0, 0, 0},    //RHFE
-  {0, 0, 0},                            //RLHFE
+  {0, 0, 0},                            //LHFE
   {0, 0, 0},                            //RKFE
   {0, 0, 0}                             //LKFE
 };
@@ -199,7 +199,7 @@ void setup() {
   }
 
   //Sets state led pin modes
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 4; i++) {
     pinMode(LED_pin[i], OUTPUT);
   }
 
