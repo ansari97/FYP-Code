@@ -126,10 +126,10 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 #define kd 2
 
 // PID gains (Kp, Ki, Kd)
-double PID_k[4][3] = {{10, 0, 0.0},    //RHFE
-  {10, 0, 0.0},                      //LHFE
-  {10, 0, 0.0},                      //RKFE
-  {10, 0, 0.0}                       //LKFE
+double PID_k[4][3] = {{25, 5, 3},    //RHFE
+  {25, 5, 3},                      //LHFE
+  {10, 2, 1},                      //RKFE
+  {10, 2, 1}                       //LKFE
 };
 
 //PID parameter constants
@@ -220,19 +220,19 @@ void setup() {
   //Sets sampling time and PID PWM ouptut limits for all PID controllers
   PID_RHFE.SetMode(AUTOMATIC);           //sets PID in Auto mode
   PID_RHFE.SetSampleTime(10);            //refreshes rate of PID controller
-  PID_RHFE.SetOutputLimits(-200, 200);   //this is the MAX PWM value to move motor
+  PID_RHFE.SetOutputLimits(-250, 250);   //this is the MAX PWM value to move motor
 
   PID_LHFE.SetMode(AUTOMATIC);           //sets PID in Auto mode
   PID_LHFE.SetSampleTime(10);            //refreshes rate of PID controller
-  PID_LHFE.SetOutputLimits(-200, 200);   //this is the MAX PWM value to move motor
+  PID_LHFE.SetOutputLimits(-250, 250);   //this is the MAX PWM value to move motor
 
   PID_RKFE.SetMode(AUTOMATIC);           //sets PID in Auto mode
   PID_RKFE.SetSampleTime(10);            //refreshes rate of PID controller
-  PID_RKFE.SetOutputLimits(-200, 200);   //this is the MAX PWM value to move motor
+  PID_RKFE.SetOutputLimits(-250, 250);   //this is the MAX PWM value to move motor
 
   PID_LKFE.SetMode(AUTOMATIC);           //sets PID in Auto mode
   PID_LKFE.SetSampleTime(10);            //refreshes rate of PID controller
-  PID_LKFE.SetOutputLimits(-200, 200);   //this is the MAX PWM value to move motor
+  PID_LKFE.SetOutputLimits(-250, 250);   //this is the MAX PWM value to move motor
 
   //Begins serial communication
   Serial.begin(115200);
@@ -295,10 +295,10 @@ void loop() {
   PID_param[LKFE][ip] = th[L][th3];
 
   //Invoke motor PID
-  mot_PID(RHFE, -20);    //invoking PID for RHFE motor with sp of 20 deg
-  mot_PID(LHFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
-  mot_PID(RKFE, 20);    //invoking PID for RKFE motor with sp of 20 deg
-  mot_PID(LKFE, 20);    //invoking PID for LHFE motor with sp of 20 deg
+  //mot_PID(RHFE, 30);    //invoking PID for RHFE motor with sp of 20 deg
+  //mot_PID(LHFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
+  mot_PID(RKFE, 30);    //invoking PID for RKFE motor with sp of 20 deg
+  mot_PID(LKFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
 
   /*
     Serial.print("RHFE Op/PWM: ");
@@ -388,9 +388,9 @@ void loop() {
   // Calculating the height in mm
   height = (double) duration * 0.346 / 2; //in mm
 
-  Serial.print("  ");
-  Serial.print("height: ");
-  Serial.print(height);
+  //Serial.print("  ");
+  //Serial.print("height: ");
+  //Serial.print(height);
 
   //Filter out noise based on magnitude
   if (loopNum > 1) {
@@ -417,17 +417,17 @@ void loop() {
 
 
   // Prints the height on the Serial Monitor
-  Serial.print("  ");
-  Serial.print("height: ");
-  Serial.print(height);
+  //Serial.print("  ");
+  //Serial.print("height: ");
+  //Serial.print(height);
 
-  Serial.print("  ");
-  Serial.print("max height: ");
-  Serial.print(max_h);
+  //Serial.print("  ");
+  //Serial.print("max height: ");
+  //Serial.print(max_h);
 
-  Serial.print("  ");
-  Serial.print("min height: ");
-  Serial.print(min_h);
+  //Serial.print("  ");
+  //Serial.print("min height: ");
+  //Serial.print(min_h);
 
   //Make a function:check_foot_trigger() !!
 
@@ -437,9 +437,10 @@ void loop() {
   //Light up LEDs based on state
   LED();
 
-  Serial.print("  ");
+/*
+  //Serial.print("  ");
 
-  Serial.print("Trigger: ");
+  //Serial.print("Trigger: ");
 
   switch (trigger) {
     case MAX:
@@ -460,7 +461,6 @@ void loop() {
   }
 
 
-
   Serial.print("  ");
 
   Serial.print("state: ");
@@ -479,7 +479,7 @@ void loop() {
       Serial.print("FLIGHT_U");
       break;
   }
-
+*/
 
   Serial.println("");
 
