@@ -295,8 +295,8 @@ void loop() {
   PID_param[LKFE][ip] = th[L][th3];
 
   //Invoke motor PID
-  //mot_PID(RHFE, 30);    //invoking PID for RHFE motor with sp of 20 deg
-  //mot_PID(LHFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
+  mot_PID(RHFE, 30);    //invoking PID for RHFE motor with sp of 20 deg
+  mot_PID(LHFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
   mot_PID(RKFE, 30);    //invoking PID for RKFE motor with sp of 20 deg
   mot_PID(LKFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
 
