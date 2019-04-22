@@ -294,11 +294,30 @@ void loop() {
   PID_param[RKFE][ip] = th[R][th3];
   PID_param[LKFE][ip] = th[L][th3];
 
-  //Invoke motor PID
-  mot_PID(RHFE, 30);    //invoking PID for RHFE motor with sp of 20 deg
-  mot_PID(LHFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
-  mot_PID(RKFE, 30);    //invoking PID for RKFE motor with sp of 20 deg
-  mot_PID(LKFE, 30);    //invoking PID for LHFE motor with sp of 20 deg
+
+ ////////////////////////////////////Actuation\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+ 
+   //Angle correction for upcoming stance phase
+  if (state == FLIGHT_U || state == FLIGHT_D) {
+
+    mot_PID(RHFE, 60);    //invoking PID for RHFE motor with sp of 60 deg
+    mot_PID(LHFE, 60);    //invoking PID for LHFE motor with sp of 60 deg
+    mot_PID(RKFE, 90);    //invoking PID for RKFE motor with sp of 90 deg
+    mot_PID(LKFE, 90);    //invoking PID for LHFE motor with sp of 90 deg
+
+  }
+
+  //Thrust
+  if (state == STANCE_U  && (th[R][th3] > 90 && th[L][th3] > 90)) {
+
+    mot_PID(RHFE, 70);    //invoking PID for RHFE motor with sp of 20 deg
+    mot_PID(LHFE, 70);    //invoking PID for LHFE motor with sp of 20 deg
+    mot_PID(RKFE, 50);    //invoking PID for RKFE motor with sp of 20 deg
+    mot_PID(LKFE, 50);    //invoking PID for LHFE motor with sp of 20 deg
+
+  }
+
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Actuation////////////////////////////////////
 
   /*
     Serial.print("RHFE Op/PWM: ");
@@ -437,49 +456,49 @@ void loop() {
   //Light up LEDs based on state
   LED();
 
-/*
-  //Serial.print("  ");
+  /*
+    //Serial.print("  ");
 
-  //Serial.print("Trigger: ");
+    //Serial.print("Trigger: ");
 
-  switch (trigger) {
-    case MAX:
-      Serial.print("MAX");
-      break;
-    case T_DOWN:
-      Serial.print("T_DOWN");
-      break;
-    case MIN:
-      Serial.print("MIN");
-      break;
-    case L_OFF:
-      Serial.print("L_OFF");
-      break;
-    case INTERMEDIATE:
-      Serial.print("INTERMEDIATE");
-      break;
-  }
+    switch (trigger) {
+      case MAX:
+        Serial.print("MAX");
+        break;
+      case T_DOWN:
+        Serial.print("T_DOWN");
+        break;
+      case MIN:
+        Serial.print("MIN");
+        break;
+      case L_OFF:
+        Serial.print("L_OFF");
+        break;
+      case INTERMEDIATE:
+        Serial.print("INTERMEDIATE");
+        break;
+    }
 
 
-  Serial.print("  ");
+    Serial.print("  ");
 
-  Serial.print("state: ");
+    Serial.print("state: ");
 
-  switch (state) {
-    case FLIGHT_D:
-      Serial.print("FLIGHT_D");
-      break;
-    case STANCE_D:
-      Serial.print("STANCE_D");
-      break;
-    case STANCE_U:
-      Serial.print("STANCE_U");
-      break;
-    case FLIGHT_U:
-      Serial.print("FLIGHT_U");
-      break;
-  }
-*/
+    switch (state) {
+      case FLIGHT_D:
+        Serial.print("FLIGHT_D");
+        break;
+      case STANCE_D:
+        Serial.print("STANCE_D");
+        break;
+      case STANCE_U:
+        Serial.print("STANCE_U");
+        break;
+      case FLIGHT_U:
+        Serial.print("FLIGHT_U");
+        break;
+    }
+  */
 
   Serial.println("");
 
