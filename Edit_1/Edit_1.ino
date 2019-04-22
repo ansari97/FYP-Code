@@ -317,7 +317,7 @@ void loop() {
 
   }
 
-\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Actuation////////////////////////////////////
+//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Actuation////////////////////////////////////
 
   /*
     Serial.print("RHFE Op/PWM: ");
@@ -387,7 +387,6 @@ void loop() {
   Serial.print(th[L][th3]);
 
 
-
   //*************************//
   //US sensor
   // Clears the usoPin
@@ -436,9 +435,9 @@ void loop() {
 
 
   // Prints the height on the Serial Monitor
-  //Serial.print("  ");
-  //Serial.print("height: ");
-  //Serial.print(height);
+  Serial.print("  ");
+  Serial.print("height: ");
+  Serial.print(height);
 
   //Serial.print("  ");
   //Serial.print("max height: ");
