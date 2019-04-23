@@ -295,9 +295,9 @@ void loop() {
   PID_param[LKFE][ip] = th[L][th3];
 
 
- ////////////////////////////////////Actuation\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
- 
-   //Angle correction for upcoming stance phase
+  ////////////////////////////////////Actuation\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+  //Angle correction for upcoming stance phase
   if (state == FLIGHT_U || state == FLIGHT_D) {
 
     mot_PID(RHFE, 60);    //invoking PID for RHFE motor with sp of 60 deg
@@ -305,6 +305,13 @@ void loop() {
     mot_PID(RKFE, 90);    //invoking PID for RKFE motor with sp of 90 deg
     mot_PID(LKFE, 90);    //invoking PID for LHFE motor with sp of 90 deg
 
+  }
+
+  if (state == stance_D || (state == stance_U && (th[R][th3] > 90 && th[L][th3] > 90))) {
+    mot_stop_RHFE();
+    mot_stop_LHFE();
+    mot_stop_RKFE();
+    mot_stop_LKFE();
   }
 
   //Thrust
@@ -317,7 +324,7 @@ void loop() {
 
   }
 
-//\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Actuation////////////////////////////////////
+  //\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Actuation////////////////////////////////////
 
   /*
     Serial.print("RHFE Op/PWM: ");
