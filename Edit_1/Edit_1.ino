@@ -59,7 +59,7 @@ double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
 double v1;
 double v2;
-int max_min_thresh = 5, n_thresh = 50;             //Noise threshold
+int max_min_thresh = 6, n_thresh = 50;             //Noise threshold
 
 //motor number constants
 #define RHFE 0
@@ -467,7 +467,7 @@ void loop() {
   LED();
 
   
-    //Serial.print("  ");
+    Serial.print("  ");
 
     //Serial.print("Trigger: ");
 
