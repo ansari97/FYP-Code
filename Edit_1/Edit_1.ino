@@ -110,8 +110,8 @@ int ft_but[2][2];// = {{HIGH, HIGH},   //Right 1 and right 2
 #define L 1
 
 //initial L2 and L3 angles in degrees
-double init_th[2][2] = {{00, 00},   //Right th2(hip), right th3(knee)
-  {0, 0}                          //Left th2(hip), left th3(knee)
+double init_th[2][2] = {{65, 30},   //Right th2(hip), right th3(knee)
+  {65, 30}                          //Left th2(hip), left th3(knee)
 };
 
 //Encoder pulses
@@ -307,7 +307,7 @@ void loop() {
 
   }
 
-  if (state == stance_D || (state == stance_U && (th[R][th3] > 90 && th[L][th3] > 90))) {
+  if (state == STANCE_D || (state == STANCE_U && (th[R][th3] > 90 && th[L][th3] > 90))) {
     mot_stop_RHFE();
     mot_stop_LHFE();
     mot_stop_RKFE();
@@ -317,10 +317,10 @@ void loop() {
   //Thrust
   if (state == STANCE_U  && (th[R][th3] < 90 && th[L][th3] < 90)) {
 
-    mot_PID(RHFE, 70);    //invoking PID for RHFE motor with sp of 20 deg
-    mot_PID(LHFE, 70);    //invoking PID for LHFE motor with sp of 20 deg
-    mot_PID(RKFE, 50);    //invoking PID for RKFE motor with sp of 20 deg
-    mot_PID(LKFE, 50);    //invoking PID for LHFE motor with sp of 20 deg
+    mot_PID(RHFE, 70);    //invoking PID for RHFE motor with sp of 70 deg
+    mot_PID(LHFE, 70);    //invoking PID for LHFE motor with sp of 70 deg
+    mot_PID(RKFE, 50);    //invoking PID for RKFE motor with sp of 50 deg
+    mot_PID(LKFE, 50);    //invoking PID for LHFE motor with sp of 50 deg
 
   }
 
