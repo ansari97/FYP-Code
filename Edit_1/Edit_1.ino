@@ -315,7 +315,7 @@ void loop() {
   }
 
   //Thrust
-  if (state == STANCE_U  && (th[R][th3] < 90 && th[L][th3] < 90)) {
+  if (state == STANCE_U) {
 
     mot_PID(RHFE, 70);    //invoking PID for RHFE motor with sp of 70 deg
     mot_PID(LHFE, 70);    //invoking PID for LHFE motor with sp of 70 deg
