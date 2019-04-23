@@ -59,7 +59,7 @@ double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
 double v1;
 double v2;
-int max_min_thresh = 8, n_thresh = 50;             //Noise threshold
+int max_min_thresh = 15, n_thresh = 50;             //Noise threshold
 
 //motor number constants
 #define RHFE 0
@@ -126,10 +126,10 @@ double th[2][3];      //Right th2, th3, th4; Left th2, th3, th4
 #define kd 2
 
 // PID gains (Kp, Ki, Kd)
-double PID_k[4][3] = {{25, 5, 3},    //RHFE
-  {25, 5, 3},                      //LHFE
-  {10, 2, 1},                      //RKFE
-  {10, 2, 1}                       //LKFE
+double PID_k[4][3] = {{25, 1, 3},    //RHFE
+  {25, 1, 3},                      //LHFE
+  {20, 1, 3},                      //RKFE
+  {20, 1, 3}                       //LKFE
 };
 
 //PID parameter constants
@@ -462,7 +462,7 @@ void loop() {
   //Light up LEDs based on state
   LED();
 
-  /*
+  
     //Serial.print("  ");
 
     //Serial.print("Trigger: ");
@@ -504,7 +504,7 @@ void loop() {
         Serial.print("FLIGHT_U");
         break;
     }
-  */
+  
 
   Serial.println("");
 
