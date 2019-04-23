@@ -41,7 +41,7 @@ int loopNum = 0;
 #define FLIGHT_U 3
 
 //trigger and state variables; state is current state; initialize state with FLIGHT_U
-int trigger, state = FLIGHT_U;
+int trigger, state = FLIGHT_D;
 
 //State LED pins
 const int LED_pin[4] = {10, 11, 12, 13};  //one for each state
@@ -59,7 +59,7 @@ double min_h = 1000;          //must be greater than starting height of robot
 double p_h = 0;
 double v1;
 double v2;
-int max_min_thresh = 15, n_thresh = 50;             //Noise threshold
+int max_min_thresh = 5, n_thresh = 50;             //Noise threshold
 
 //motor number constants
 #define RHFE 0
@@ -411,18 +411,22 @@ void loop() {
   // Reads the usiPin, returns the sound wave travel time in microseconds
   duration = pulseIn(usiPin, HIGH);
   // Calculating the height in mm
-  height = (double) duration * 0.346 / 2; //in mm
+  height = (double) duration * 0.346 / 2; //units mm
 
-  //Serial.print("  ");
-  //Serial.print("height: ");
-  //Serial.print(height);
+/*
+  Serial.print("  ");
+  Serial.print("raw_height: ");
+  Serial.print(height);
+*/
 
+/*
   //Filter out noise based on magnitude
   if (loopNum > 1) {
     if (abs(height - p_h) > n_thresh) {
       height = p_h;
     }
   }
+*/
 
   //Check and update maximum height
   if (height - max_h > max_min_thresh) {
